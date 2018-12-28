@@ -22,12 +22,10 @@ class Date:
             return True
         elif (self.year > rhs.year):
             return False
-        ## Years are equal
         if (self.month < rhs.month):
             return True
         elif (self.month > rhs.month):
             return True
-        ## Months are Equal
         if (self.day < rhs.day):
             return True
         else:
@@ -44,7 +42,7 @@ def clear():
     os.system( 'cls' )
 def downloadFiles():
     print("Downloading all of the report cards listed under KTRH Progress Reports")
-    folderId = '1LlFeBANo-xVrfi7woI9kgu0FZ97F-rSu'
+    folderId = '1LlFeBANo-xVrfi7woI9kgu0FZ97F-rSu' # Unique to KTRH
     SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
     store = file.Storage('token.json')
     creds = store.get()
@@ -148,5 +146,6 @@ def main():
     res = checker()
     count = deleteFiles()
     if (res):
-        print("Successfully searched through",count,"report cards and removed them from the operating system. Enter 'gradeFile.txt' on the command line to view the progress reports that require attention")
+        print("Successfully searched through",count,"report cards and removed them from the operating system.")
+        print("Enter 'gradeFile.txt' on the command line to view the progress reports that require attention.")
 main() 
