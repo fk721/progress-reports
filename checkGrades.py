@@ -31,7 +31,8 @@ class Date:
         else:
             return False
     def __eq__(self, rhs):
-        return (self.month == rhs.month and self.day == rhs.day and self.year == rhs.year)
+        return (self.month == rhs.month and \
+        self.day == rhs.day and self.year == rhs.year)
     def __str__(self):
         return (str(self.month) + "/" + str(self.day) +"/" +str(self.year))
     def isValid(self):
@@ -41,7 +42,8 @@ class Date:
 def clear():
     os.system( 'cls' )
 def downloadFiles():
-    print("Downloading all of the report cards listed under KTRH Progress Reports")
+    print("Downloading all of the report cards"
+    " listed under KTRH Progress Reports")
     folderId = '1LlFeBANo-xVrfi7woI9kgu0FZ97F-rSu' # Unique to KTRH
     SCOPES = 'https://www.googleapis.com/auth/drive.readonly'
     store = file.Storage('token.json')
@@ -50,7 +52,8 @@ def downloadFiles():
         flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
         creds = tools.run_flow(flow, store)
     service = build('drive', 'v3', http=creds.authorize(Http()))
-    children = service.files().list(q = "'1LlFeBANo-xVrfi7woI9kgu0FZ97F-rSu' in parents").execute()
+    children = service.files().list(q = \
+    "'1LlFeBANo-xVrfi7woI9kgu0FZ97F-rSu' in parents").execute()
     if ('files' not in children):
         print("No report cards in this directory")
         return
@@ -62,7 +65,8 @@ def downloadFiles():
         arrNames.append(item['name'].strip() + ".xlsx")
     for i in range(len(arrID)):
         file_id = arrID[i]
-        request = service.files().export_media(fileId=file_id,mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        request = service.files().export_media(fileId=file_id,mimeType=\
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         fh = io.FileIO(arrNames[i], 'wb')
         downloader = MediaIoBaseDownload(fh , request)
         done = False
@@ -70,9 +74,11 @@ def downloadFiles():
         while done is False:
             status, done = downloader.next_chunk()
     clear()
-    print("Finished downloading",len(collectionID),"report cards from KTRH Progress Reports")
+    print("Finished downloading",len(collectionID),\
+    "report cards from KTRH Progress Reports")
 def checker():
-    month,date,year = input("Enter the desired date in MM/DD/YY format: ").split("/")
+    month,date,year = input(\
+    "Enter the desired date in MM/DD/YY format: ").split("/")
     userDate = Date(month, date, year)
     if (not userDate.isValid()):
         print("Not a valid date!")
@@ -90,22 +96,24 @@ def checker():
     else:
         print("Sorry! I cannot search there!")
         return False
-    print("Checking for students who scored below an 85% or less on", str(userDate))
+    print("Checking for students who"
+    " scored below an 85% or less on", str(userDate))
     scoreSheet = open("gradeFile.txt", "w")
     for filename in os.listdir(os.getcwd()):
         if filename.endswith(".xlsx"):
             print("Checking file:",filename)
             workbook = xlrd.open_workbook(filename)
             reportCard = workbook.sheet_by_index(0)
-            studentName = str(reportCard.cell_value(0,0)).strip()
+            studentName = (str(filename)).split(".")[0]
             done = True
             col = colOrg
             while (done):
                 if (col >= endCol):
                     done = False
-                elif (reportCard.cell_value(col,0)): 
+                elif (reportCard.cell_value(col,0)):
                     date = reportCard.cell_value(col,0)
-                    year, month, day, hour, minute, second = xlrd.xldate_as_tuple(date, workbook.datemode)
+                    year, month, day, hour, minute, second = \
+                    xlrd.xldate_as_tuple(date, workbook.datemode)
                     excelDate = Date(month,day,int(year) - 2000)
                     if (excelDate > userDate):
                         done = False
@@ -119,9 +127,10 @@ def checker():
                         else:
                             hwValue = [(reportCard.cell_value(col,5)) * 100]
                         if (cwValue[0] <= 85 or hwValue[0] <= 85):
-                            scoreSheet.write(studentName.upper() + ": " + str(excelDate) +
-                                             " Classwork grade: " + str(cwValue[0]) + "% "
-                                             + "Homework grade: " + str(hwValue[0]) + "% " + "\n")
+                            scoreSheet.write(studentName.upper() + ": " + \
+                            str(excelDate) + " Classwork grade: " + \
+                            str(cwValue[0]) + "% " + \
+                            "Homework grade: " + str(hwValue[0]) + "% " + "\n")
                 col += 1
     scoreSheet.close()
     clear()
@@ -146,6 +155,8 @@ def main():
     res = checker()
     count = deleteFiles()
     if (res):
-        print("Successfully searched through",count,"report cards and removed them from the operating system.")
-        print("Enter 'gradeFile.txt' on the command line to view the progress reports that require attention.")
-main() 
+        print("Successfully searched through",count,"report cards and"
+        " removed them from the operating system.")
+        print("Enter 'gradeFile.txt' on the command line to view the"
+        " progress reports that require attention.")
+main()
